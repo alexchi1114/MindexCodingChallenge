@@ -61,10 +61,10 @@ namespace CodeChallenge.Services
         }
 
         //I interpreted the task as wanting to return the entire loaded hierarchy
-		public ReportingStructure GetReportingStructureByEmployeeId(string id)
-		{
-			if (!String.IsNullOrEmpty(id))
-			{
+        public ReportingStructure GetReportingStructureByEmployeeId(string id)
+        {
+            if (!String.IsNullOrEmpty(id))
+            {
                 var employee = _employeeRepository.GetByIdWithReports(id);
                 if (employee != null)
                 {
@@ -74,57 +74,57 @@ namespace CodeChallenge.Services
                         NumberOfReports = GetNumberOfReports(employee)
                     };
                 }
-			}
+            }
 
-			return null;
-		}
+            return null;
+        }
 
-		private int GetNumberOfReports(Employee employee)
-		{
-			int _reportingCount = 0;
-
-			//Use recursion to find the total reporting count for the employee.
-			if (employee?.DirectReports != null)
-			{
-				foreach (var report in employee.DirectReports)
-				{
-					_reportingCount++;
-					_reportingCount += GetNumberOfReports(report);
-				}
-			}
-			return _reportingCount;
-		}
-
-		public Compensation GetCompensationById(string id)
-		{
-			if (!String.IsNullOrEmpty(id))
-			{
-				return _employeeRepository.GetCompensationById(id);
-			}
-
-			return null;
-		}
-
-		public Compensation CreateCompensation(string employeeId, Compensation compensation)
+        private int GetNumberOfReports(Employee employee)
         {
-			if (!String.IsNullOrEmpty(employeeId) && compensation != null)
-			{
+            int _reportingCount = 0;
+
+            //Use recursion to find the total reporting count for the employee.
+            if (employee?.DirectReports != null)
+            {
+                foreach (var report in employee.DirectReports)
+                {
+                    _reportingCount++;
+                    _reportingCount += GetNumberOfReports(report);
+                }
+            }
+            return _reportingCount;
+        }
+
+        public Compensation GetCompensationById(string id)
+        {
+            if (!String.IsNullOrEmpty(id))
+            {
+                return _employeeRepository.GetCompensationById(id);
+            }
+
+            return null;
+        }
+
+        public Compensation CreateCompensation(string employeeId, Compensation compensation)
+        {
+            if (!String.IsNullOrEmpty(employeeId) && compensation != null)
+            {
                 compensation.EmployeeId = employeeId;
-				_employeeRepository.AddCompensation(compensation);
-				_employeeRepository.SaveAsync().Wait();
-			}
+                _employeeRepository.AddCompensation(compensation);
+                _employeeRepository.SaveAsync().Wait();
+            }
 
             return compensation;
-		}
+        }
 
-		public List<Compensation> GetCompensationsByEmployeeId(string employeeId)
-		{
-			if (!String.IsNullOrEmpty(employeeId))
-			{
-				return _employeeRepository.GetCompensationsForEmployee(employeeId);
-			}
+        public List<Compensation> GetCompensationsByEmployeeId(string employeeId)
+        {
+            if (!String.IsNullOrEmpty(employeeId))
+            {
+                return _employeeRepository.GetCompensationsForEmployee(employeeId);
+            }
 
-			return null;
-		}
-	}
+            return null;
+        }
+    }
 }

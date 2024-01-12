@@ -63,17 +63,17 @@ namespace CodeChallenge.Controllers
          * "collection/item/collection" convention rather than create a separate ReportingStructureController
          */
 
-		[HttpGet("{id}/ReportingStructure")]
-		public IActionResult GetReportingStructureByEmployeeId(String id)
-		{
-			_logger.LogDebug($"Received employee reporting structure get request for '{id}'");
+        [HttpGet("{id}/ReportingStructure")]
+        public IActionResult GetReportingStructureByEmployeeId(String id)
+        {
+            _logger.LogDebug($"Received employee reporting structure get request for '{id}'");
 
-			var reportingStructure = _employeeService.GetReportingStructureByEmployeeId(id);
+            var reportingStructure = _employeeService.GetReportingStructureByEmployeeId(id);
 
-			if (reportingStructure == null || reportingStructure.Employee == null)
-				return NotFound();
+            if (reportingStructure == null || reportingStructure.Employee == null)
+                return NotFound();
 
-			return Ok(reportingStructure);
-		}
+            return Ok(reportingStructure);
+        }
     }
 }

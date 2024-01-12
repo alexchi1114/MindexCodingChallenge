@@ -32,9 +32,9 @@ namespace CodeChallenge.Repositories
             return _employeeContext.Employees.SingleOrDefault(e => e.EmployeeId == id);
         }
 
-		public Employee GetByIdWithReports(string id)
-		{
-			var employee = _employeeContext.Employees.Include(o => o.DirectReports).SingleOrDefault(e => e.EmployeeId == id);
+        public Employee GetByIdWithReports(string id)
+        {
+            var employee = _employeeContext.Employees.Include(o => o.DirectReports).SingleOrDefault(e => e.EmployeeId == id);
             if(employee?.DirectReports != null)
             {
                 foreach(var report in employee.DirectReports)
@@ -43,26 +43,26 @@ namespace CodeChallenge.Repositories
                 }
             }
             return employee;
-		}
+        }
         
         public Compensation GetCompensationById(string id)
-		{
-			return _employeeContext.Compensation.SingleOrDefault(e => e.CompensationId == id);
-		}
+        {
+            return _employeeContext.Compensation.SingleOrDefault(e => e.CompensationId == id);
+        }
 
-		public Compensation AddCompensation(Compensation compensation)
+        public Compensation AddCompensation(Compensation compensation)
         {
             compensation.CompensationId = Guid.NewGuid().ToString();
             _employeeContext.Compensation.Add(compensation);
             return compensation;
-		}
+        }
 
         public List<Compensation> GetCompensationsForEmployee(string employeeId)
         {
             return _employeeContext.Compensation.Where(c => c.EmployeeId == employeeId).OrderByDescending(c => c.EffectiveDate).ToList();
         }
 
-		public Task SaveAsync()
+        public Task SaveAsync()
         {
             return _employeeContext.SaveChangesAsync();
         }
@@ -83,6 +83,6 @@ namespace CodeChallenge.Repositories
                     LoadReports(report);
                 }
             }
-		}
-	}
+        }
+    }
 }
