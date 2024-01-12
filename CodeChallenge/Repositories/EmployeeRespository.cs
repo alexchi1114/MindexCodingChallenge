@@ -32,7 +32,20 @@ namespace CodeChallenge.Repositories
             return _employeeContext.Employees.SingleOrDefault(e => e.EmployeeId == id);
         }
 
-        public Task SaveAsync()
+		public Employee GetByIdWithReports(string id)
+		{
+			var employee = _employeeContext.Employees.Include(o => o.DirectReports).SingleOrDefault(e => e.EmployeeId == id);
+            if(employee?.DirectReports != null)
+            {
+                foreach(var report in employee.DirectReports)
+                {
+                    LoadReports(report);
+                }
+            }
+            return employee;
+		}
+
+		public Task SaveAsync()
         {
             return _employeeContext.SaveChangesAsync();
         }
@@ -41,5 +54,18 @@ namespace CodeChallenge.Repositories
         {
             return _employeeContext.Remove(employee).Entity;
         }
-    }
+
+        private void LoadReports(Employee employee)
+        {
+            employee = _employeeContext.Employees.Include(o => o.DirectReports).SingleOrDefault(e => e.EmployeeId == employee.EmployeeId);
+            //Recursively load the reports
+            if(employee?.DirectReports != null)
+            {
+                foreach(var report in employee.DirectReports)
+                {
+                    LoadReports(report);
+                }
+            }
+		}
+	}
 }
