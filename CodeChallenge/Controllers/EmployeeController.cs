@@ -60,7 +60,7 @@ namespace CodeChallenge.Controllers
         }
 
         /* I decided to add the ReportingStructure endpoint to the EmployeeController and follow a 
-         * "collection/item/collection" convention rather than create a separate ReportingStrucutureController
+         * "collection/item/collection" convention rather than create a separate ReportingStructureController
          */
 
 		[HttpGet("{id}/ReportingStructure")]
@@ -68,12 +68,12 @@ namespace CodeChallenge.Controllers
 		{
 			_logger.LogDebug($"Received employee reporting structure get request for '{id}'");
 
-			var employee = _employeeService.GetReportingStructureByEmployeeId(id);
+			var reportingStructure = _employeeService.GetReportingStructureByEmployeeId(id);
 
-			if (employee == null)
+			if (reportingStructure == null || reportingStructure.Employee == null)
 				return NotFound();
 
-			return Ok(employee);
+			return Ok(reportingStructure);
 		}
-	}
+    }
 }

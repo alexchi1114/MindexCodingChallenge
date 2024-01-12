@@ -94,5 +94,37 @@ namespace CodeChallenge.Services
 			}
 			return _reportingCount;
 		}
+
+		public Compensation GetCompensationById(string id)
+		{
+			if (!String.IsNullOrEmpty(id))
+			{
+				return _employeeRepository.GetCompensationById(id);
+			}
+
+			return null;
+		}
+
+		public Compensation CreateCompensation(string employeeId, Compensation compensation)
+        {
+			if (!String.IsNullOrEmpty(employeeId) && compensation != null)
+			{
+                compensation.EmployeeId = employeeId;
+				_employeeRepository.AddCompensation(compensation);
+				_employeeRepository.SaveAsync().Wait();
+			}
+
+            return compensation;
+		}
+
+		public List<Compensation> GetCompensationsByEmployeeId(string employeeId)
+		{
+			if (!String.IsNullOrEmpty(employeeId))
+			{
+				return _employeeRepository.GetCompensationsForEmployee(employeeId);
+			}
+
+			return null;
+		}
 	}
 }

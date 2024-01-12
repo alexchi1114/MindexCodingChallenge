@@ -12,6 +12,18 @@
       {
         "employeeId": "03aa1462-ffa9-4978-901b-7c001562cf6f"
       }
+    ],
+    "compensations": [
+      {
+        "compensationId": "9b675e89-b3b8-4b5a-bdc4-3dea9b8b999b",
+        "Salary": "75003.05",
+        "EffectiveDate": "2024-01-13T00:00:00"
+      },
+      {
+        "compensationId": "4edc690a-4702-4a43-928a-4f930939d43f",
+        "Salary": "70000.01",
+        "EffectiveDate": "2023-02-21T00:00:00"
+      }
     ]
   },
   {

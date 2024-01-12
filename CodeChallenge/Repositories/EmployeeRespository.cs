@@ -44,6 +44,23 @@ namespace CodeChallenge.Repositories
             }
             return employee;
 		}
+        
+        public Compensation GetCompensationById(string id)
+		{
+			return _employeeContext.Compensation.SingleOrDefault(e => e.CompensationId == id);
+		}
+
+		public Compensation AddCompensation(Compensation compensation)
+        {
+            compensation.CompensationId = Guid.NewGuid().ToString();
+            _employeeContext.Compensation.Add(compensation);
+            return compensation;
+		}
+
+        public List<Compensation> GetCompensationsForEmployee(string employeeId)
+        {
+            return _employeeContext.Compensation.Where(c => c.EmployeeId == employeeId).OrderByDescending(c => c.EffectiveDate).ToList();
+        }
 
 		public Task SaveAsync()
         {
