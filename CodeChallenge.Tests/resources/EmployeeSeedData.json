@@ -61,5 +61,17 @@
     "lastName": "Harrison",
     "position": "Developer III",
     "department": "Engineering"
+  },
+  {
+    "employeeId": "b51d1600-62a7-441f-adbc-605b45077992",
+    "firstName": "Infinite",
+    "lastName": "Loop",
+    "position": "Destroyer of Applications",
+    "department": "Exceptions",
+    "directReports": [
+      {
+        "employeeId": "b51d1600-62a7-441f-adbc-605b45077992"
+      }
+    ]
   }
 ]

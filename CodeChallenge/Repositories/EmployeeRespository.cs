@@ -32,19 +32,22 @@ namespace CodeChallenge.Repositories
             return _employeeContext.Employees.SingleOrDefault(e => e.EmployeeId == id);
         }
 
-        public Employee GetByIdWithReports(string id)
+        public Employee Remove(Employee employee)
         {
-            var employee = _employeeContext.Employees.Include(o => o.DirectReports).SingleOrDefault(e => e.EmployeeId == id);
-            if(employee?.DirectReports != null)
-            {
-                foreach(var report in employee.DirectReports)
-                {
-                    LoadReports(report);
-                }
-            }
-            return employee;
+            return _employeeContext.Remove(employee).Entity;
         }
-        
+
+        public ReportingStructure GetReportingStructureByEmployeeId(string id)
+        {
+            var employee = GetById(id);
+            int reportingCount = LoadReports(employee);
+            return new ReportingStructure()
+            {
+                Employee = employee,
+                NumberOfReports = reportingCount
+            };
+        }
+
         public Compensation GetCompensationById(string id)
         {
             return _employeeContext.Compensation.SingleOrDefault(e => e.CompensationId == id);
@@ -67,22 +70,35 @@ namespace CodeChallenge.Repositories
             return _employeeContext.SaveChangesAsync();
         }
 
-        public Employee Remove(Employee employee)
+        /// <summary>
+        /// Loads the DirectReports hierarchy for a given employee and returns the DirectReport count
+        /// </summary>
+        /// <param name="employee">The employee to load the DirectReports hierarchy for</param>
+        /// <param name="usedNodes">The employeeIds that have already been loaded in the hierarchy. Used to prevent infinite loop.</param>
+        private int LoadReports(Employee employee, List<string> usedEmployeeIds = null)
         {
-            return _employeeContext.Remove(employee).Entity;
-        }
-
-        private void LoadReports(Employee employee)
-        {
+            //Using recursion to load the reports. Ideally, this would be done with a recursive CTE in, for example, SQL Server.
+            usedEmployeeIds ??= new List<string>() { employee.EmployeeId };
+            int _reportingCount = 0;
             employee = _employeeContext.Employees.Include(o => o.DirectReports).SingleOrDefault(e => e.EmployeeId == employee.EmployeeId);
-            //Recursively load the reports
             if(employee?.DirectReports != null)
             {
                 foreach(var report in employee.DirectReports)
                 {
-                    LoadReports(report);
+                    if (usedEmployeeIds == null || !usedEmployeeIds.Contains(report.EmployeeId))
+                    {
+                        //Some defensive code to Keep track of which employeeIds have been used to prevent a branch looping back on itself
+                        usedEmployeeIds.Add(report.EmployeeId);
+                        _reportingCount++;
+                        _reportingCount += LoadReports(report, usedEmployeeIds);
+                    }
+                    else
+                    {
+                        throw new StackOverflowException();
+                    }
                 }
             }
+            return _reportingCount;
         }
     }
 }

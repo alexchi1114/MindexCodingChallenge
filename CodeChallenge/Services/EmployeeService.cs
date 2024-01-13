@@ -65,34 +65,10 @@ namespace CodeChallenge.Services
         {
             if (!String.IsNullOrEmpty(id))
             {
-                var employee = _employeeRepository.GetByIdWithReports(id);
-                if (employee != null)
-                {
-                    return new ReportingStructure()
-                    {
-                        Employee = employee,
-                        NumberOfReports = GetNumberOfReports(employee)
-                    };
-                }
+                return _employeeRepository.GetReportingStructureByEmployeeId(id);
             }
 
             return null;
-        }
-
-        private int GetNumberOfReports(Employee employee)
-        {
-            int _reportingCount = 0;
-
-            //Use recursion to find the total reporting count for the employee.
-            if (employee?.DirectReports != null)
-            {
-                foreach (var report in employee.DirectReports)
-                {
-                    _reportingCount++;
-                    _reportingCount += GetNumberOfReports(report);
-                }
-            }
-            return _reportingCount;
         }
 
         public Compensation GetCompensationById(string id)

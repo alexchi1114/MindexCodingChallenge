@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using CodeChallenge.Services;
 using CodeChallenge.Models;
+using System.Net;
 
 namespace CodeChallenge.Controllers
 {
@@ -68,12 +69,20 @@ namespace CodeChallenge.Controllers
         {
             _logger.LogDebug($"Received employee reporting structure get request for '{id}'");
 
-            var reportingStructure = _employeeService.GetReportingStructureByEmployeeId(id);
+            try
+            {
+                var reportingStructure = _employeeService.GetReportingStructureByEmployeeId(id);
 
-            if (reportingStructure == null || reportingStructure.Employee == null)
-                return NotFound();
+                if (reportingStructure == null || reportingStructure.Employee == null)
+                    return NotFound();
 
-            return Ok(reportingStructure);
+                return Ok(reportingStructure);
+            } 
+            catch(StackOverflowException e)
+            {
+                _logger.LogDebug($"Employee reporting structure get request for '{id}' resulted in infinite loop", e);
+                return new StatusCodeResult((int)HttpStatusCode.LoopDetected);
+            }
         }
     }
 }

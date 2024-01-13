@@ -154,5 +154,19 @@ namespace CodeCodeChallenge.Tests.Integration
             Assert.AreEqual(expectedLastName, reportingStructure.Employee.LastName);
             Assert.AreEqual(expectedNumberOfReports, reportingStructure.NumberOfReports);
         }
+
+        [TestMethod]
+        public void GetReportingStructureByEmployeeId_Returns_LoopDetected()
+        {
+            // Arrange
+            var employeeId = "b51d1600-62a7-441f-adbc-605b45077992";
+
+            // Execute
+            var getRequestTask = _httpClient.GetAsync($"api/employee/{employeeId}/reportingstructure");
+            var response = getRequestTask.Result;
+
+            // Assert
+            Assert.AreEqual(HttpStatusCode.LoopDetected, response.StatusCode);
+        }
     }
 }

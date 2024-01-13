@@ -24,7 +24,7 @@ namespace CodeChallenge.Controllers
         }
 
         [HttpGet("{compensationId}", Name = "GetCompensationById")]
-        public ActionResult<CompensationDto> GetCompensationById(string employeeId, string compensationId)
+        public IActionResult GetCompensationById(string employeeId, string compensationId)
         {
             _logger.LogDebug($"Received compensation get request for compensation '{compensationId}'");
 
@@ -47,7 +47,7 @@ namespace CodeChallenge.Controllers
         }
 
         [HttpGet]
-        public ActionResult<CompensationDto> GetCompensationsForEmployee(string employeeId)
+        public IActionResult GetCompensationsForEmployee(string employeeId)
         {
             _logger.LogDebug($"Received compensations get request for employee {employeeId}");
 
