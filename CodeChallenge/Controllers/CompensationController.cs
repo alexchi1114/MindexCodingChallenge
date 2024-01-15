@@ -15,23 +15,25 @@ namespace CodeChallenge.Controllers
     public class CompensationController : ControllerBase
     {
         private readonly ILogger _logger;
+        private readonly ICompensationService _compensationService;
         private readonly IEmployeeService _employeeService;
 
-        public CompensationController(ILogger<EmployeeController> logger, IEmployeeService employeeService)
+        public CompensationController(ILogger<EmployeeController> logger, IEmployeeService employeeService, ICompensationService compensationService)
         {
             _logger = logger;
+            _compensationService = compensationService;
             _employeeService = employeeService;
         }
 
-        [HttpGet("{compensationId}", Name = "GetCompensationById")]
-        public IActionResult GetCompensationById(string employeeId, string compensationId)
+        [HttpGet("{compensationId}", Name = "GetById")]
+        public IActionResult GetById(string employeeId, string compensationId)
         {
             _logger.LogDebug($"Received compensation get request for compensation '{compensationId}'");
 
             if (_employeeService.GetById(employeeId) == null)
                 return NotFound();
 
-            var compensation = _employeeService.GetCompensationById(compensationId);
+            var compensation = _compensationService.GetById(compensationId);
 
             if (compensation == null)
                 return NotFound();
@@ -54,7 +56,7 @@ namespace CodeChallenge.Controllers
             if (_employeeService.GetById(employeeId) == null)
                 return NotFound();
 
-            var compensations = _employeeService.GetCompensationsByEmployeeId(employeeId);
+            var compensations = _compensationService.GetByEmployeeId(employeeId);
 
             //Using a DTO because I don't want to return everything from the Compensation entity (specifically Employee)
             return Ok(compensations.Select(compensation => new CompensationDto()
@@ -75,13 +77,13 @@ namespace CodeChallenge.Controllers
             if (_employeeService.GetById(employeeId) == null)
                 return NotFound();
 
-            var compensationEntity = _employeeService.CreateCompensation(employeeId, new Compensation()
+            var compensationEntity = _compensationService.Create(employeeId, new Compensation()
             {
                 EffectiveDate = compensation.EffectiveDate,
                 Salary = compensation.Salary
             });
 
-            return CreatedAtRoute("GetCompensationById", new { employeeId = employeeId, compensationId = compensationEntity.CompensationId }, new CompensationDto()
+            return CreatedAtRoute("GetById", new { employeeId = employeeId, compensationId = compensationEntity.CompensationId }, new CompensationDto()
             {
                 CompensationId = compensationEntity.CompensationId,
                 EmployeeId = compensationEntity.EmployeeId,
